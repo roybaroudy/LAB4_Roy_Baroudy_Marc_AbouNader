@@ -1,0 +1,6 @@
+.venv/
+docs/.venv/
+.venv/
+_build/
+docs/.venv/
+docs/_build/

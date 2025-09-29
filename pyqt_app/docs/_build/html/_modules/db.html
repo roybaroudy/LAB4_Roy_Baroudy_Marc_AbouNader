@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>db &mdash; School Management System (PyQt) 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            School Management System (PyQt)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">School Management System (PyQt)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">db</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for db</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span><span class="o">,</span><span class="w"> </span><span class="nn">datetime</span>
+
+<span class="n">DB_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;school.db&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="get_conn">
+<a class="viewcode-back" href="../db.html#db.get_conn">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_conn</span><span class="p">():</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;data&quot;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">DB_PATH</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;PRAGMA foreign_keys = ON&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">conn</span></div>
+
+
+<div class="viewcode-block" id="init_db">
+<a class="viewcode-back" href="../db.html#db.init_db">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">init_db</span><span class="p">():</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    CREATE TABLE IF NOT EXISTS students(</span>
+<span class="s2">        student_id TEXT PRIMARY KEY,</span>
+<span class="s2">        name TEXT NOT NULL,</span>
+<span class="s2">        age INTEGER NOT NULL,</span>
+<span class="s2">        email TEXT NOT NULL</span>
+<span class="s2">    )&quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    CREATE TABLE IF NOT EXISTS instructors(</span>
+<span class="s2">        instructor_id TEXT PRIMARY KEY,</span>
+<span class="s2">        name TEXT NOT NULL,</span>
+<span class="s2">        age INTEGER NOT NULL,</span>
+<span class="s2">        email TEXT NOT NULL</span>
+<span class="s2">    )&quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    CREATE TABLE IF NOT EXISTS courses(</span>
+<span class="s2">        course_id TEXT PRIMARY KEY,</span>
+<span class="s2">        course_name TEXT NOT NULL,</span>
+<span class="s2">        instructor_id TEXT,</span>
+<span class="s2">        FOREIGN KEY(instructor_id) REFERENCES instructors(instructor_id) ON DELETE SET NULL</span>
+<span class="s2">    )&quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    CREATE TABLE IF NOT EXISTS registrations(</span>
+<span class="s2">        student_id TEXT NOT NULL,</span>
+<span class="s2">        course_id TEXT NOT NULL,</span>
+<span class="s2">        PRIMARY KEY(student_id, course_id),</span>
+<span class="s2">        FOREIGN KEY(student_id) REFERENCES students(student_id) ON DELETE CASCADE,</span>
+<span class="s2">        FOREIGN KEY(course_id) REFERENCES courses(course_id) ON DELETE CASCADE</span>
+<span class="s2">    )&quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="backup_db">
+<a class="viewcode-back" href="../db.html#db.backup_db">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">backup_db</span><span class="p">(</span><span class="n">dst_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">DB_PATH</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">dst_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="insert_student">
+<a class="viewcode-back" href="../db.html#db.insert_student">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">insert_student</span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSERT INTO students(student_id,name,age,email) VALUES(?,?,?,?)&quot;</span><span class="p">,(</span><span class="n">student_id</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">age</span><span class="p">),</span><span class="n">email</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="update_student">
+<a class="viewcode-back" href="../db.html#db.update_student">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_student</span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UPDATE students SET name=?, age=?, email=? WHERE student_id=?&quot;</span><span class="p">,(</span><span class="n">name</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">age</span><span class="p">),</span><span class="n">email</span><span class="p">,</span><span class="n">student_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="delete_student">
+<a class="viewcode-back" href="../db.html#db.delete_student">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_student</span><span class="p">(</span><span class="n">student_id</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;DELETE FROM students WHERE student_id=?&quot;</span><span class="p">,(</span><span class="n">student_id</span><span class="p">,))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_students">
+<a class="viewcode-back" href="../db.html#db.get_students">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_students</span><span class="p">():</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT student_id,name,age,email FROM students ORDER BY student_id&quot;</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">rows</span></div>
+
+
+<div class="viewcode-block" id="insert_instructor">
+<a class="viewcode-back" href="../db.html#db.insert_instructor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">insert_instructor</span><span class="p">(</span><span class="n">instructor_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSERT INTO instructors(instructor_id,name,age,email) VALUES(?,?,?,?)&quot;</span><span class="p">,(</span><span class="n">instructor_id</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">age</span><span class="p">),</span><span class="n">email</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="update_instructor">
+<a class="viewcode-back" href="../db.html#db.update_instructor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_instructor</span><span class="p">(</span><span class="n">instructor_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UPDATE instructors SET name=?, age=?, email=? WHERE instructor_id=?&quot;</span><span class="p">,(</span><span class="n">name</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">age</span><span class="p">),</span><span class="n">email</span><span class="p">,</span><span class="n">instructor_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="delete_instructor">
+<a class="viewcode-back" href="../db.html#db.delete_instructor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_instructor</span><span class="p">(</span><span class="n">instructor_id</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;DELETE FROM instructors WHERE instructor_id=?&quot;</span><span class="p">,(</span><span class="n">instructor_id</span><span class="p">,))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_instructors">
+<a class="viewcode-back" href="../db.html#db.get_instructors">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_instructors</span><span class="p">():</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT instructor_id,name,age,email FROM instructors ORDER BY instructor_id&quot;</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">rows</span></div>
+
+
+<div class="viewcode-block" id="insert_course">
+<a class="viewcode-back" href="../db.html#db.insert_course">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">insert_course</span><span class="p">(</span><span class="n">course_id</span><span class="p">,</span> <span class="n">course_name</span><span class="p">,</span> <span class="n">instructor_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSERT INTO courses(course_id,course_name,instructor_id) VALUES(?,?,?)&quot;</span><span class="p">,(</span><span class="n">course_id</span><span class="p">,</span><span class="n">course_name</span><span class="p">,</span><span class="n">instructor_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="update_course">
+<a class="viewcode-back" href="../db.html#db.update_course">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_course</span><span class="p">(</span><span class="n">course_id</span><span class="p">,</span> <span class="n">course_name</span><span class="p">,</span> <span class="n">instructor_id</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UPDATE courses SET course_name=?, instructor_id=? WHERE course_id=?&quot;</span><span class="p">,(</span><span class="n">course_name</span><span class="p">,</span><span class="n">instructor_id</span><span class="p">,</span><span class="n">course_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="delete_course">
+<a class="viewcode-back" href="../db.html#db.delete_course">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_course</span><span class="p">(</span><span class="n">course_id</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;DELETE FROM courses WHERE course_id=?&quot;</span><span class="p">,(</span><span class="n">course_id</span><span class="p">,))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_courses">
+<a class="viewcode-back" href="../db.html#db.get_courses">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_courses</span><span class="p">():</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    SELECT c.course_id,c.course_name,c.instructor_id,i.name</span>
+<span class="s2">    FROM courses c LEFT JOIN instructors i ON c.instructor_id=i.instructor_id</span>
+<span class="s2">    ORDER BY c.course_id</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">rows</span></div>
+
+
+<div class="viewcode-block" id="register_student">
+<a class="viewcode-back" href="../db.html#db.register_student">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">register_student</span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="n">course_id</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSERT OR IGNORE INTO registrations(student_id,course_id) VALUES(?,?)&quot;</span><span class="p">,(</span><span class="n">student_id</span><span class="p">,</span><span class="n">course_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="unregister_student">
+<a class="viewcode-back" href="../db.html#db.unregister_student">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">unregister_student</span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="n">course_id</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;DELETE FROM registrations WHERE student_id=? AND course_id=?&quot;</span><span class="p">,(</span><span class="n">student_id</span><span class="p">,</span><span class="n">course_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_registrations">
+<a class="viewcode-back" href="../db.html#db.get_registrations">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_registrations</span><span class="p">():</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    SELECT r.student_id,s.name,r.course_id,c.course_name</span>
+<span class="s2">    FROM registrations r</span>
+<span class="s2">    JOIN students s ON s.student_id=r.student_id</span>
+<span class="s2">    JOIN courses c ON c.course_id=r.course_id</span>
+<span class="s2">    ORDER BY r.student_id,r.course_id</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">rows</span></div>
+
+
+<div class="viewcode-block" id="search">
+<a class="viewcode-back" href="../db.html#db.search">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="n">term</span><span class="p">):</span>
+    <span class="n">like</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="n">term</span><span class="si">}</span><span class="s2">%&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">get_conn</span><span class="p">()</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT student_id,name,age,email FROM students WHERE student_id LIKE ? OR name LIKE ? OR email LIKE ?&quot;</span><span class="p">,(</span><span class="n">like</span><span class="p">,</span><span class="n">like</span><span class="p">,</span><span class="n">like</span><span class="p">))</span>
+    <span class="n">students</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT instructor_id,name,age,email FROM instructors WHERE instructor_id LIKE ? OR name LIKE ? OR email LIKE ?&quot;</span><span class="p">,(</span><span class="n">like</span><span class="p">,</span><span class="n">like</span><span class="p">,</span><span class="n">like</span><span class="p">))</span>
+    <span class="n">instructors</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT course_id,course_name,IFNULL(instructor_id,&#39;&#39;) FROM courses WHERE course_id LIKE ? OR course_name LIKE ?&quot;</span><span class="p">,(</span><span class="n">like</span><span class="p">,</span><span class="n">like</span><span class="p">))</span>
+    <span class="n">courses</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">students</span><span class="p">,</span> <span class="n">instructors</span><span class="p">,</span> <span class="n">courses</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Marc Abou Nader, Roy Baroudy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
